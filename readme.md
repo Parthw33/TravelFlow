@@ -107,14 +107,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Framer Motion](https://www.framer.com/motion/)
 - [Lucide Icons](https://lucide.dev/)
 
-## 📧 Contact
-
-For any queries or support, please contact:
-
-- Email: support@travelflow.com
-- Website: [travelflow.com](https://travelflow.com)
-- Twitter: [@travelflow](https://twitter.com/travelflow)
-
----
-
-Made with ❤️ by the TravelFlow Team
+Made with ❤️ by Parth Wattamwar
