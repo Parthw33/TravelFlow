@@ -108,8 +108,8 @@ export function BookingForm({
         <DialogHeader>
           <DialogTitle>Book Your Trip to {tripTitle}</DialogTitle>
           <DialogDescription>
-            Fill in the details below to book your adventure. We'll get back to
-            you within 24 hours.
+            Fill in the details below to book your adventure. We&apos;ll get
+            back to you within 24 hours.
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>

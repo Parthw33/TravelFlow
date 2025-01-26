@@ -121,7 +121,7 @@ export default function ContactPage() {
                 Get in Touch
               </h1>
               <p className="text-lg text-muted-foreground">
-                Have questions about our services? We're here to help!
+                Have questions about our services? We&apos;re here to help!
               </p>
             </motion.div>
           </div>

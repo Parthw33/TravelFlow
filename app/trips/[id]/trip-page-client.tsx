@@ -237,7 +237,7 @@ export function TripPageClient({ tripId }: TripPageClientProps) {
                 {/* Inclusions Card */}
                 <Card className="p-6">
                   <h3 className="mb-4 text-xl font-semibold">
-                    What's Included
+                    What&apos;s Included
                   </h3>
                   <div className="space-y-3">
                     {perks.map((perk: any, index: any) => (

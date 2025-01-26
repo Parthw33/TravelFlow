@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React from "react";
 
 export default function Page() {
   return (
@@ -9,7 +9,7 @@ export default function Page() {
           Coming Soon
         </h1>
         <p className="mt-4 text-xl text-gray-600 dark:text-gray-300">
-          We're working hard to bring something awesome to you!
+          We&apos;re working hard to bring something awesome to you!
         </p>
       </div>
     </div>
