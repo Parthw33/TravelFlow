@@ -1,6 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { onEntryChange } from "../contentstack-sdk";
-import { HeaderProps, Entry, NavLinks } from "../typescript/layout";
+import {
+  HeaderProps,
+  Entry,
+  NavLinks,
+  ButtonConfig,
+} from "../typescript/layout";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getAllEntries, getHeaderRes } from "../helper";

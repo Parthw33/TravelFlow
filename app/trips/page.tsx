@@ -9,7 +9,7 @@ import { Suspense, useEffect, useState } from "react";
 import { Alltrips } from "./components/alltrips";
 
 // Skeleton for Footer Data Loading
-export const FooterSkeleton = () => (
+const FooterSkeleton = () => (
   <div className="w-full h-20 mt-4 bg-gray-200 rounded-lg animate-pulse"></div>
 );
 
@@ -19,7 +19,9 @@ const HeaderSkeleton = () => (
 );
 
 export default function Page() {
-  const [footerData, setFooterData] = useState<FooterProps | undefined>(undefined);
+  const [footerData, setFooterData] = useState<FooterProps | undefined>(
+    undefined
+  );
   const [tripData, setTripData] = useState<TripsData[]>([]);
   const [loading, setLoading] = useState(true);
   const entryUrl = usePathname();
@@ -64,7 +66,10 @@ export default function Page() {
               </div>
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
                 {[...Array(8)].map((_, index) => (
-                  <div key={index} className="w-full bg-gray-200 rounded-lg animate-pulse h-72"></div>
+                  <div
+                    key={index}
+                    className="w-full bg-gray-200 rounded-lg animate-pulse h-72"
+                  ></div>
                 ))}
               </div>
             </div>
