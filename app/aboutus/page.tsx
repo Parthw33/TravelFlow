@@ -37,8 +37,6 @@ export default function AboutPage() {
           getAllTeam(),
         ]);
 
-        console.log("Data ", team);
-
         setFooterData(footer);
         setAboutData(about);
         setTeam(team);
@@ -75,8 +73,6 @@ export default function AboutPage() {
 
   const { heroBanner, mission, fromAuthors } =
     extractModularBlockData(aboutData);
-
-  console.log("wqdwqdwd ", aboutData);
 
   if (loading) return <div>Loading...</div>;
 

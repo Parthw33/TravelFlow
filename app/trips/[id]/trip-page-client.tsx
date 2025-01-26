@@ -90,8 +90,6 @@ export function TripPageClient({ tripId }: TripPageClientProps) {
   const { highlights, itinerary, tripDetails, perks } =
     extractModularBlockData(singleTrip);
 
-  console.log("qwwqw ", highlights);
-
   if (loading) return <TripSkeleton />;
   if (!singleTrip) {
     return (

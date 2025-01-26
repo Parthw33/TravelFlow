@@ -64,7 +64,6 @@ export function BookingForm({
   const [open, setOpen] = useState(false);
   const [selectedGroupSize, setSelectedGroupSize] = useState<string>("");
   const [calculatedPrice, setCalculatedPrice] = useState(basePrice);
-  console.log("efew ", itinerary);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

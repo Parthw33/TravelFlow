@@ -15,7 +15,6 @@ export function FeaturedTrips({
   featuredTrip: FeaturedTrip[];
   tripData: TripsData[];
 }) {
-  console.log("TripData ", tripData);
   return (
     <section className="px-4 py-24 bg-background hover:file:first-line:backdrop:">
       <div className="container mx-auto">
