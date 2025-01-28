@@ -1,63 +1,89 @@
-// "use client";
-// import React from "react";
-
-// export default function Page() {
-//   return (
-//     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-blue-200 dark:from-gray-800 dark:to-gray-900">
-//       <div className="text-center">
-//         <h1 className="text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-300 dark:to-purple-400">
-//           Coming Soon
-//         </h1>
-//         <p className="mt-4 text-xl text-gray-600 dark:text-gray-300">
-//           We&apos;re working hard to bring something awesome to you!
-//         </p>
-//       </div>
-//     </div>
-//   );
-// }
-
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
 
-export default function LoginPage() {
+const AuthPage = () => {
+  const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [passwordMatch, setPasswordMatch] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError(null);
+    setError("");
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const username = formData.get("username") as string;
+    const data = {
+      email: formData.get("email") as string,
+      username: formData.get("name") as string,
+      password: formData.get("password") as string,
+    };
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        username,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setError("Invalid credentials");
-        return;
+      if (!data.email || !data.password || !data.username) {
+        throw new Error("Please fill in all required fields");
+      }
+      if (!isLogin && !passwordMatch) {
+        throw new Error("Passwords do not match");
       }
 
-      router.push("/dashboard");
-      router.refresh();
-    } catch (error) {
-      setError("An error occurred. Please try again.");
+      if (isLogin) {
+        // Handle login
+        const result = await signIn("credentials", {
+          name: data.username,
+          email: data.email,
+          password: data.password,
+          redirect: false,
+        });
+
+        if (result?.error) {
+          throw new Error(result.error);
+        }
+
+        router.push("/dashboard");
+        router.refresh();
+      } else {
+        // Handle registration
+        const response = await fetch("/api/user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || "Something went wrong");
+        }
+
+        // After successful registration, sign in the user
+        const signInResult = await signIn("credentials", {
+          email: data.email,
+          password: data.password,
+          username: data.username,
+          redirect: false,
+        });
+
+        if (signInResult?.error) {
+          throw new Error(signInResult.error);
+        }
+
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
     } finally {
       setLoading(false);
     }
@@ -81,6 +107,10 @@ export default function LoginPage() {
     },
   };
 
+  const handlesignup = (provider: string) => {
+    signIn(provider, { callbackUrl: "/dashboard" });
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted/50">
       <div className="w-full max-w-xl mx-4">
@@ -93,10 +123,12 @@ export default function LoginPage() {
           <div className="relative h-24 bg-gradient-to-r from-[#39c6ab] to-[#2e8b9a] px-6 flex flex-col justify-center">
             <motion.div variants={headerVariants}>
               <h1 className="text-xl font-bold text-primary-foreground">
-                Welcome Back
+                {isLogin ? "Welcome Back" : "Create an Account"}
               </h1>
               <p className="text-primary-foreground/80 text-xs mt-1">
-                Sign in to TravelFlow with your credentials
+                {isLogin
+                  ? "Sign in to TravelFlow with your credentials"
+                  : "Join TravelFlow today and get started"}
               </p>
             </motion.div>
           </div>
@@ -117,6 +149,14 @@ export default function LoginPage() {
               </AnimatePresence>
 
               <Input
+                name="name"
+                type="text"
+                placeholder="Username"
+                className="h-10 text-sm px-4 rounded-lg"
+                required
+              />
+
+              <Input
                 name="email"
                 type="email"
                 placeholder="Email"
@@ -131,12 +171,39 @@ export default function LoginPage() {
                 required
               />
 
+              {!isLogin && (
+                <PasswordInput
+                  name="confirmPassword"
+                  placeholder="Re-enter Password"
+                  className="h-10 text-sm px-4 rounded-lg"
+                  required
+                  onChange={(e) => {
+                    const password = (
+                      document.querySelector(
+                        'input[name="password"]'
+                      ) as HTMLInputElement
+                    ).value;
+                    setPasswordMatch(e.target.value === password);
+                  }}
+                />
+              )}
+
+              {!passwordMatch && (
+                <div className="text-sm text-red-500 mt-1">
+                  Passwords do not match
+                </div>
+              )}
+
               <Button
                 type="submit"
                 className="w-full h-10 text-sm font-medium rounded-lg bg-gradient-to-r from-[#39c6ab] to-[#2e8b9a] hover:opacity-90"
-                disabled={loading}
+                disabled={loading || (!isLogin && !passwordMatch)}
               >
-                {loading ? "Please wait..." : "Sign In"}
+                {loading
+                  ? "Please wait..."
+                  : isLogin
+                  ? "Sign In"
+                  : "Create Account"}
               </Button>
             </form>
 
@@ -152,7 +219,7 @@ export default function LoginPage() {
               type="button"
               variant="outline"
               className="w-full h-10 text-sm font-medium rounded-lg"
-              onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+              onClick={() => handlesignup("google")}
             >
               <svg
                 className="mr-2 h-4 w-4"
@@ -182,15 +249,27 @@ export default function LoginPage() {
             <div className="text-center text-sm text-muted-foreground">
               <button
                 type="button"
-                onClick={() => router.push("/signup")}
+                onClick={() => setIsLogin(!isLogin)}
                 className="hover:underline focus:outline-none"
               >
-                Need an account? Sign up
+                {isLogin
+                  ? "Need an account? Sign up"
+                  : "Already have an account? Sign in"}
               </button>
+            </div>
+            <div className="text-center text-sm">
+              <Link
+                href="/login"
+                className="text-[#39c6ab] hover:underline focus:outline-none"
+              >
+                Click here to log in with username and password
+              </Link>
             </div>
           </div>
         </motion.div>
       </div>
     </div>
   );
-}
+};
+
+export default AuthPage;
